@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './CSS/AboutPage.css';
-
+import InformationDataService from '../Services/InformationDataService'
 class About extends Component {
 
     constructor(props){
@@ -10,20 +10,21 @@ class About extends Component {
     }
 
     componentDidMount(){
-        const fetchPosts = async() => {
-            const res = await fetch('http://localhost:5000/about');
-            const data = await res.json();
-            return data;
-          }
 
-        const getPosts = async() => {
-        const postsFromServer = await fetchPosts();
-        
-        this.setState({aboutContent:postsFromServer[0].content});
-        console.log(this.state.aboutContent);
+
+        const getAbout = async() =>{
+            InformationDataService.getAboutPost()
+            .then(response => {
+                this.setState({aboutContent:response.data[0].content});
+                // console.log(response.data[0]._id);
+            })
+            .catch(e => {
+                console.log(e)
+            });
         }
     
-        getPosts();
+        // getPosts();
+        getAbout();
     }
 
 

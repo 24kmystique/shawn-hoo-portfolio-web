@@ -3,59 +3,50 @@ import { useState, useEffect, useRef } from 'react';
 import { AiOutlineEdit } from "react-icons/ai";
 import './AboutAdmin.css';
 import editStyles from "../../CSS/edit-style.module.css";
+import InformationDataService from '../../../Services/InformationDataService';
 
 function AboutAdmin() {
+  let [aboutPost,setAboutPost] = useState("");
   let [oriAboutContent,setOriAboutContent] = useState("");
   let [aboutContent,setAboutContent] = useState("");
   let [isEdit,setIsEdit] = useState(false);
   let timer = useRef();
   
   useEffect(() => {
-      const getPosts = async() => {
-        const postsFromServer = await fetchPosts();
-        //reverse arr to display most recent first
-      //   setBlogRecords(postsFromServer.slice(0).reverse());
-      setOriAboutContent(postsFromServer[0].content);
-      setAboutContent(postsFromServer[0].content);
-      }
-  
-      getPosts();
+      getAbout();
   
     },[])
 
-  //----------------------database stuff------------------------------------------------
-    const fetchPosts = async() => {
-      const res = await fetch('http://localhost:5000/about');
-      const data = await res.json();
-      return data;
-    }
-
-    const fetchPost = async() => {
-      const res = await fetch(`http://localhost:5000/about/0`);
-      const data = await res.json();
-
-      return data;
+  //----------------------mongoDB stuff------------------------------------------------
+    const getAbout = async() =>{
+        InformationDataService.getAboutPost()
+        .then(response => {
+            setAboutPost(response.data[0]);
+            setOriAboutContent(response.data[0].content);
+            setAboutContent(response.data[0].content);
+            console.log(response.data[0]._id);
+        })
+        .catch(e => {
+            console.log(e)
+        });
     }
 
     const updatePost = async () => {
-      const postToUpdate = await fetchPost();
       const updatedPost = {
-        ...postToUpdate, 
+        "_id": aboutPost._id, 
         "content": aboutContent
       }
 
-      const res = await fetch(`http://localhost:5000/about/0`, {
-        method:'PUT',
-        headers:{
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify(updatedPost)
+      InformationDataService.updateAboutPost(updatedPost)
+      .then(response => {
+        // setSubmitted(true);
+        console.log(response.data);
       })
-
-      const data = await res.json();
+      .catch(e=>{
+        console.log(e);
+      });
     }
-
-  //----------------------database stuff------------------------------------------------
+  
 
 
 
