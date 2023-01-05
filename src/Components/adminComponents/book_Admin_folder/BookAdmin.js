@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Component } from 'react';
 import BookCover from '../../../assets/book-cover_of-the-florids.png';
+import InformationDataService from '../../../Services/InformationDataService';
 // import './BookAdmin.css';
 import BookAdminHeader from './BookAdminHeader';
 import BookAdminInner from './BookAdminInner';
@@ -9,22 +10,24 @@ function BookAdmin() {
     let [bookAll,setBookAll] = useState("");
 
     useEffect(() => {
-        const getPosts = async() => {
-        const postsFromServer = await fetchPosts();
-        setBookAll(postsFromServer.slice(0).reverse());
-        
-        }
+
         getPosts();
 
-    },[])
+    },[bookAll])
 
 
 
     //----------------------database stuff------------------------------------------------
-    const fetchPosts = async() => {
-        const res = await fetch('http://localhost:5000/books');
-        const data = await res.json();
-        return data;
+    const getPosts = async() =>{
+        InformationDataService.getBookPost()
+        .then(response => {
+          console.log(response.data[0]);
+          setBookAll(response.data.slice(0).reverse());
+          // setBlogRecords(response.data);
+        })
+        .catch(e => {
+            console.log(e)
+        });
     }
 
 
@@ -35,7 +38,7 @@ function BookAdmin() {
         <div className='bookAdminOuter'>
             
             <BookAdminHeader bookAll = {bookAll} setBookAll = {setBookAll}/>
-            {bookAll && bookAll.map((bookProp) => <BookAdminInner key={bookProp.id} book = {bookProp} setBookAll = {setBookAll}/>)}
+            {bookAll && bookAll.map((bookProp) => <BookAdminInner key={bookProp._id} book = {bookProp} setBookAll = {setBookAll}/>)}
 
         </div>
     )

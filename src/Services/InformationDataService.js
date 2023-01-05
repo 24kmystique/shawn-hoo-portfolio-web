@@ -52,6 +52,15 @@ class InformationDataService{
     getBookPost(){
         return http.get(`/booksGET`);
     }
+    updateBookPost(data){
+        return http.put("/bookUPDATE", data);
+    }
+    createBookPost(data){
+        return http.post("/bookCREATE",data);
+    }
+    deleteBookPost(id){
+        return http.delete(`/bookDELETE?id=${id}`);
+    }
 }
 
 export default new InformationDataService();

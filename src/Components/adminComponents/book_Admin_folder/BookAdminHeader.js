@@ -6,6 +6,7 @@ import {v4} from 'uuid';
 import {FaFileImage} from "react-icons/fa";
 import editStyles from "../../CSS/edit-style.module.css";
 import buttonStyle from "../../CSS/button-style.module.css";
+import InformationDataService from '../../../Services/InformationDataService';
 
 function BookAdminHeader({bookAll, setBookAll}) {
     let [isEdit,setIsEdit] = useState(false);
@@ -116,11 +117,20 @@ function BookAdminHeader({bookAll, setBookAll}) {
         }))
     }
 
+    function resetAll(){
+        setTitleText("");
+        setEditionText("");
+        setAwardsText("");
+        setDescText("");
+        setReviewsArr([]);
+        setInterviewsArr([]);
+    }
+
     function addNewBook(){
-        let newID = bookAll[0].id+1;
-        console.log(newID);
+        // let newID = bookAll[0].id+1;
+        // console.log(newID);
         let newBook = {
-            "id": newID,
+            // "id": newID,
             "imageUrl": imageURL,
             "title": titleText,
             "edition": editionText,
@@ -131,6 +141,7 @@ function BookAdminHeader({bookAll, setBookAll}) {
             };
 
         addPostFunction(newBook);
+        resetAll();
         setBookAll(current => [newBook,...current]);
         
     }
@@ -199,41 +210,53 @@ function BookAdminHeader({bookAll, setBookAll}) {
     
   }
 
-  const updatePost = async (instanceID) => {
-    const postToUpdate = await fetchPost(instanceID);
-    const updatedPost = {
-      ...postToUpdate, 
-      "title": titleText,
-      "imageUrl": imageURL,
-      "edition": editionText,
-      "awards": awardsText,
-      "description": descText,
-      "reviews": reviewsArr,
-      "interviews": interviewsArr
-    }
+//   const updatePost = async (instanceID) => {
+//     const postToUpdate = await fetchPost(instanceID);
+//     const updatedPost = {
+//       ...postToUpdate, 
+//       "title": titleText,
+//       "imageUrl": imageURL,
+//       "edition": editionText,
+//       "awards": awardsText,
+//       "description": descText,
+//       "reviews": reviewsArr,
+//       "interviews": interviewsArr
+//     }
 
-    const res = await fetch(`http://localhost:5000/books/${instanceID}`, {
-      method:'PUT',
-      headers:{
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(updatedPost)
+//     const res = await fetch(`http://localhost:5000/books/${instanceID}`, {
+//       method:'PUT',
+//       headers:{
+//         'Content-type': 'application/json'
+//       },
+//       body: JSON.stringify(updatedPost)
+//     })
+
+//     const data = await res.json();
+//   }
+
+//   const addPostFunction = async (post) => {
+//     const res = await fetch('http://localhost:5000/books', {
+//         method: 'POST',
+//         headers: {
+//             'Content-type': 'application/json',
+//         },
+//         body: JSON.stringify(post),
+//     })
+
+//     const data = await res.json();
+// }
+
+const addPostFunction = async (post) => {
+
+    InformationDataService.createBookPost(post)
+    .then(response => {
+      // setSubmitted(true);
+        //   console.log(response.data.insertedId);
     })
-
-    const data = await res.json();
+    .catch(e=>{
+      console.log(e);
+    });
   }
-
-  const addPostFunction = async (post) => {
-    const res = await fetch('http://localhost:5000/books', {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json',
-        },
-        body: JSON.stringify(post),
-    })
-
-    const data = await res.json();
-}
 
   //----------------------database stuff------------------------------------------------
 

@@ -2,33 +2,36 @@ import React, { useState, useEffect, Component } from 'react';
 import BookCover from '../assets/book-cover_of-the-florids.png';
 import './CSS/BookPage.css';
 import {FaFileImage} from "react-icons/fa";
+import InformationDataService from '../Services/InformationDataService';
 
 function Book() {
 
     let [bookAll,setBookAll] = useState("");
 
     useEffect(() => {
-        const getPosts = async() => {
-        const postsFromServer = await fetchPosts();
-        setBookAll(postsFromServer.slice(0).reverse());
-        
-        }
+
         getPosts();
 
     },[])
 
     //----------------------database stuff------------------------------------------------
-    const fetchPosts = async() => {
-        const res = await fetch('http://localhost:5000/books');
-        const data = await res.json();
-        return data;
+    const getPosts = async() =>{
+        InformationDataService.getBookPost()
+        .then(response => {
+          // console.log(response.data[0]._id);
+          setBookAll(response.data.slice(0).reverse());
+          // setBlogRecords(response.data);
+        })
+        .catch(e => {
+            console.log(e)
+        });
     }
 
         return (
 
             <div>
                 {bookAll && bookAll.map((book) => 
-                <div key={book.id}>
+                <div key={book._id}>
                     <div className='book-page-cover-wrapper'>
                         <div className='book-page-cover-wrapper__left-col'>
                             {book.imageUrl==null?<FaFileImage size={150} color={'darkgrey'} />:<img src={book.imageUrl} />}

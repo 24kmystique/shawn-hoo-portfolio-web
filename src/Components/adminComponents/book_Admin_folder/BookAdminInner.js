@@ -7,21 +7,22 @@ import {FaFileImage} from "react-icons/fa";
 import editStyles from "../../CSS/edit-style.module.css";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import buttonStyle from "../../CSS/button-style.module.css";
+import InformationDataService from '../../../Services/InformationDataService';
 
 function BookAdminInner({book, setBookAll}) {
     let [isEdit,setIsEdit] = useState(false);
-    let [titleText,setTitleText] = useState(book.title);
-    let [editionText,setEditionText] = useState(book.edition);
-    let [awardsText,setAwardsText] = useState(book.awards);
-    let [descText,setDescText] = useState(book.description);
+    let [titleText,setTitleText] = useState(book.title.replace(/\\n/g,'\n'));
+    let [editionText,setEditionText] = useState(book.edition.replace(/\\n/g,'\n'));
+    let [awardsText,setAwardsText] = useState(book.awards.replace(/\\n/g,'\n'));
+    let [descText,setDescText] = useState(book.description.replace(/\\n/g,'\n'));
     let [reviewsArr,setReviewsArr] = useState(book.reviews);
     let [interviewsArr,setInterviewsArr] = useState(book.interviews);
 
     //original values
-    let [oriTitleText,setOriTitleText] = useState(book.title);
-    let [oriEditionText,setOriEditionText] = useState(book.edition);
-    let [oriAwardsText,setOriAwardsText] = useState(book.awards);
-    let [oriDescText,setOriDescText] = useState(book.description);
+    let [oriTitleText,setOriTitleText] = useState(book.title.replace(/\\n/g,'\n'));
+    let [oriEditionText,setOriEditionText] = useState(book.edition.replace(/\\n/g,'\n'));
+    let [oriAwardsText,setOriAwardsText] = useState(book.awards.replace(/\\n/g,'\n'));
+    let [oriDescText,setOriDescText] = useState(book.description.replace(/\\n/g,'\n'));
     let [oriReviewsArr,setOriReviewsArr] = useState(book.reviews);
     let [oriInterviewsArr,setOriInterviewsArr] = useState(book.interviews);
 
@@ -128,7 +129,7 @@ function BookAdminInner({book, setBookAll}) {
     }
 
     function saveButton(){
-        updatePost(book.id);
+        updatePost(book._id);
         setOriImageURL(imageURL);
         setOriTitleText(titleText);
         setOriEditionText(editionText);
@@ -160,8 +161,8 @@ function BookAdminInner({book, setBookAll}) {
         if(imageURL!=null){
             deleteFromFirebase(imageURL);
         }
-        deleteServerPost(book.id);
-        setBookAll(current => current.filter((innerItem)=> innerItem.id!==book.id));
+        deleteServerPost(book._id);
+        setBookAll(current => current.filter((innerItem)=> innerItem.id!==book._id));
     }
 
     function addNewReview(){
@@ -189,26 +190,31 @@ function BookAdminInner({book, setBookAll}) {
     }
 
       //----------------------database stuff------------------------------------------------
-  const fetchPost = async(instanceID) => {
-    const res = await fetch(`http://localhost:5000/books/${instanceID}`);
-    const data = await res.json();
 
-    return data;
-  }
+//   const deleteServerPost = async (id) => {
+//     await fetch(`http://localhost:5000/books/${id}`,{
+//       method: 'DELETE',
+//     });
 
-  const deleteServerPost = async (id) => {
-    await fetch(`http://localhost:5000/books/${id}`,{
-      method: 'DELETE',
-    });
-
-    // setBlogRecords(blogRecords.filter((record) => record.id !== id));
+//     // setBlogRecords(blogRecords.filter((record) => record.id !== id));
     
+//   }
+  const deleteServerPost = async (id) => {
+
+    InformationDataService.deleteBookPost(id)
+    .then(response => {
+      // setSubmitted(true);
+    //   setBlogRecords(blogRecords.filter((record) => record._id !== id));
+      console.log(response.data);
+    })
+    .catch(e=>{
+      console.log(e);
+    });
   }
 
-  const updatePost = async (instanceID) => {
-    const postToUpdate = await fetchPost(instanceID);
+  const updatePost = async (id) => {
     const updatedPost = {
-      ...postToUpdate, 
+      "_id": id, 
       "title": titleText,
       "imageUrl": imageURL,
       "edition": editionText,
@@ -217,17 +223,16 @@ function BookAdminInner({book, setBookAll}) {
       "reviews": reviewsArr,
       "interviews": interviewsArr
     }
-
-    const res = await fetch(`http://localhost:5000/books/${instanceID}`, {
-      method:'PUT',
-      headers:{
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(updatedPost)
+    InformationDataService.updateBookPost(updatedPost)
+    .then(response => {
+      // setSubmitted(true);
+      console.log(response.data);
     })
-
-    const data = await res.json();
+    .catch(e=>{
+      console.log(e);
+    });
   }
+
 
   //----------------------database stuff------------------------------------------------
 
