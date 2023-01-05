@@ -29,6 +29,15 @@ class InformationDataService{
     updateContactPost(data){
         return http.put("/contactUPDATE", data);
     }
+    getPublicationPost(){
+        return http.get(`/publicationGET`);
+    }
+    getBlogPost(){
+        return http.get(`/blogGET`);
+    }
+    getBookPost(){
+        return http.get(`/booksGET`);
+    }
 }
 
 export default new InformationDataService();

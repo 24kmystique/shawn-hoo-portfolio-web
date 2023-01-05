@@ -5,6 +5,7 @@ import { IoIosCreate } from "react-icons/io";
 import PublicationsTypeAdmin from './PublicationsTypeAdmin';
 import './PublicationsAdmin.css';
 import buttonStyle from "../../CSS/button-style.module.css";
+import InformationDataService from '../../../Services/InformationDataService';
 
 function PublicationsPageAdmin() {
     // have 1 overall map
@@ -13,11 +14,11 @@ function PublicationsPageAdmin() {
     let [arrAll,setArrAll] = useState([]);
 
     useEffect(() => {
-        const getPosts = async() => {
-        const postsFromServer = await fetchPosts();
-        setArrAll(postsFromServer);
+        // const getPosts = async() => {
+        // const postsFromServer = await fetchPosts();
+        // setArrAll(postsFromServer);
         
-        }
+        // }
         getPosts();
         
 
@@ -45,11 +46,25 @@ function PublicationsPageAdmin() {
     }
 
     //----------------------database stuff------------------------------------------------
-    const fetchPosts = async() => {
-        const res = await fetch('http://localhost:5000/publications');
-        const data = await res.json();
-        return data;
+    const getPosts = async() =>{
+        InformationDataService.getPublicationPost()
+        .then(response => {
+          // console.log(response.data.filter((cat,idx) => idx%3===0)[0].category[1][0]);
+          setArrAll(response.data);
+        //   setArr1(response.data.filter((cat,idx) => idx%3===0));
+        //   setArr2(response.data.filter((cat,idx) => idx%3===1));
+        //   setArr3(response.data.filter((cat,idx) => idx%3===2));
+    
+        })
+        .catch(e => {
+            console.log(e)
+        });
     }
+    // const fetchPosts = async() => {
+    //     const res = await fetch('http://localhost:5000/publications');
+    //     const data = await res.json();
+    //     return data;
+    // }
     const fetchPost = async(instanceID) => {
         const res = await fetch(`http://localhost:5000/publications/${instanceID}`);
         const data = await res.json();

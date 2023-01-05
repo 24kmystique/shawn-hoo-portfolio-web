@@ -27,6 +27,7 @@ import LoginPage from "./Components/adminComponents/LoginPage";
 
 
 import CreateDynamicBlog from './Components/blog/CreateDynamicBlog.js';
+import InformationDataService from "./Services/InformationDataService";
 
 function App() {
   const { isLoading, isAuthenticated } = useAuth0();
@@ -53,32 +54,34 @@ function App() {
   }
 
   useEffect(() => {
-    const getPosts = async() => {
-    const postsFromServer = await fetchPosts();
-    setBookAll(postsFromServer);
-    setBookTitle(postsFromServer[0].title.toLowerCase());
 
-    // blog posts
-    const blogPostsFromServer = await fetchBlogPosts();
-    setblogPosts(blogPostsFromServer);
-    
-    }
-    getPosts();
+    getBookPost();
+    getBlogPost();
 
   },[])
 
   //----------------------database stuff------------------------------------------------
-  const fetchPosts = async() => {
-    const res = await fetch('http://localhost:5000/books');
-    const data = await res.json();
-    return data;
-  }
-
-  const fetchBlogPosts = async() => {
-    const res = await fetch('http://localhost:5000/blogPosts');
-    const data = await res.json();
-    return data;
-  }
+  const getBookPost = async() =>{
+    InformationDataService.getBookPost()
+    .then(response => {
+      setBookAll(response.data);
+      setBookTitle(response.data[0].title.toLowerCase());
+        console.log(response.data[0]._id);
+    })
+    .catch(e => {
+        console.log(e)
+    });
+}
+const getBlogPost = async() =>{
+  InformationDataService.getBlogPost()
+  .then(response => {
+    setblogPosts(response.data);
+      console.log(response.data[0]._id);
+  })
+  .catch(e => {
+      console.log(e)
+  });
+}
 
 
   if (isLoading) {
@@ -127,7 +130,7 @@ function App() {
             blogPosts && blogPosts.map((blogpost) => {
               console.log(`/blog${blogpost.id}`)
               return (
-                <Route key={blogpost.id} path={`/blog${blogpost.id}`} element={<CreateDynamicBlog content={blogpost}/>} />
+                <Route key={blogpost._id} path={`/blog${blogpost._id}`} element={<CreateDynamicBlog content={blogpost}/>} />
               )
             })}
             <Route path='/contact' element={<ContactPage />} />

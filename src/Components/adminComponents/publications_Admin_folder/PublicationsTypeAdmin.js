@@ -26,9 +26,9 @@ function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
   }
 
   function handleContentChange1(newVal, idx){
-    setPubArr(pubArr.map((item)=>{
-      if(item.id === idx){
-        item.first = newVal;
+    setPubArr(pubArr.map((item, innerIdx)=>{
+      if(innerIdx === idx){
+        item[0] = newVal;
         return item;
       }
       return item;
@@ -37,9 +37,9 @@ function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
   }
   
   function handleContentChange2(newVal, idx){
-    setPubArr(pubArr.map((item)=>{
-      if(item.id === idx){
-        item.second = newVal;
+    setPubArr(pubArr.map((item, innerIdx)=>{
+      if(innerIdx === idx){
+        item[1] = newVal;
         return item;
       }
       return item;
@@ -141,7 +141,7 @@ const updatePost = async (instanceID) => {
           {pubArr.map((publication) => (
               <div key={publication.id}>
                   {/* possibly has to change this to an a tag */}
-                  <p style={{margin: 0}}>{publication.first}. <i>{publication.second}</i>. </p>
+                  <p style={{margin: 0}}>{publication[0]}. <i>{publication[1]}</i>. </p>
               </div>
           ))}
         </div>

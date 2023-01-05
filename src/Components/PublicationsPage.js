@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import PublicationType from './PublicationType'
 import './CSS/PublicationsPage.css';
+import InformationDataService from '../Services/InformationDataService';
 
 const PublicationsPage = () => {
   // have 1 overall map
@@ -12,25 +13,38 @@ const PublicationsPage = () => {
   let [arr3,setArr3] = useState([]);
 
   useEffect(() => {
-    const getPosts = async() => {
-      const postsFromServer = await fetchPosts();
-      setArr1(postsFromServer.filter((cat,idx) => idx%3===0));
-      setArr2(postsFromServer.filter((cat,idx) => idx%3===1));
-      setArr3(postsFromServer.filter((cat,idx) => idx%3===2));
+    // const getPosts = async() => {
+    //   const postsFromServer = await fetchPosts();
+    //   setArr1(postsFromServer.filter((cat,idx) => idx%3===0));
+    //   setArr2(postsFromServer.filter((cat,idx) => idx%3===1));
+    //   setArr3(postsFromServer.filter((cat,idx) => idx%3===2));
       
       
-    }
+    // }
     getPosts();
     
 
   },[])
 
 //----------------------database stuff------------------------------------------------
-  const fetchPosts = async() => {
-    const res = await fetch('http://localhost:5000/publications');
-    const data = await res.json();
-    return data;
-  }
+  // const fetchPosts = async() => {
+  //   const res = await fetch('http://localhost:5000/publications');
+  //   const data = await res.json();
+  //   return data;
+  // }
+  const getPosts = async() =>{
+    InformationDataService.getPublicationPost()
+    .then(response => {
+      console.log(response.data.filter((cat,idx) => idx%3===0)[0].category[1][0]);
+      setArr1(response.data.filter((cat,idx) => idx%3===0));
+      setArr2(response.data.filter((cat,idx) => idx%3===1));
+      setArr3(response.data.filter((cat,idx) => idx%3===2));
+
+    })
+    .catch(e => {
+        console.log(e)
+    });
+}
 
   return (
     <div className="containerStyle">
