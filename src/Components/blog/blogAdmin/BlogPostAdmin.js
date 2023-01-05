@@ -14,6 +14,7 @@ import {FaFileImage} from "react-icons/fa";
 import ClassicEditor from 'ckeditor5-custom-build/build/ckeditor'
 import {CKEditor} from '@ckeditor/ckeditor5-react'
 import '../../CSS/ckeditor.css';
+import InformationDataService from '../../../Services/InformationDataService';
 
 function BlogPostAdmin({itemIdx, instanceID, recordImageUrl, recordHeader, bodyPara, recordDate, recordTags, blogRecords, setBlogRecords}) {
 
@@ -36,7 +37,6 @@ function BlogPostAdmin({itemIdx, instanceID, recordImageUrl, recordHeader, bodyP
   let [oriImageURL, setOriImageURL] = useState(recordImageUrl);
   let [imageURL, setImageURL] = useState(recordImageUrl);
   let [imageChanged, setImageChanged] = useState(false);
-
 
   //----------------------firebase stuff------------------------------------------------
   const uploadImage = (e) => {
@@ -105,26 +105,9 @@ function BlogPostAdmin({itemIdx, instanceID, recordImageUrl, recordHeader, bodyP
   };
 
   //----------------------database stuff------------------------------------------------
-  const fetchPost = async(instanceID) => {
-    const res = await fetch(`http://localhost:5000/blogPosts/${instanceID}`);
-    const data = await res.json();
-
-    return data;
-  }
-
-  const deleteServerPost = async (id) => {
-    await fetch(`http://localhost:5000/blogPosts/${id}`,{
-      method: 'DELETE',
-    });
-
-    setBlogRecords(blogRecords.filter((record) => record.id !== id));
-    
-  }
-
-  const updatePost = async (instanceID) => {
-    const postToUpdate = await fetchPost(instanceID);
+  const updatePost = async () => {
     const updatedPost = {
-      ...postToUpdate, 
+      "_id": instanceID, 
       "header": headerText,
       "imageUrl":imageURL,
       "bodyPara": paraText,
@@ -132,16 +115,29 @@ function BlogPostAdmin({itemIdx, instanceID, recordImageUrl, recordHeader, bodyP
       "tags": tagArr
     }
 
-    const res = await fetch(`http://localhost:5000/blogPosts/${instanceID}`, {
-      method:'PUT',
-      headers:{
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(updatedPost)
+    InformationDataService.updateBlogPost(updatedPost)
+    .then(response => {
+      // setSubmitted(true);
+      console.log(response.data);
     })
-
-    const data = await res.json();
+    .catch(e=>{
+      console.log(e);
+    });
   }
+
+  const deleteServerPost = async (id) => {
+
+    InformationDataService.deleteBlogPost(id)
+    .then(response => {
+      // setSubmitted(true);
+      setBlogRecords(blogRecords.filter((record) => record._id !== id));
+      console.log(response.data);
+    })
+    .catch(e=>{
+      console.log(e);
+    });
+  }
+
 
   //----------------------database stuff------------------------------------------------
 

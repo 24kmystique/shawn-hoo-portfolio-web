@@ -9,6 +9,7 @@ import editStyles from "../../CSS/edit-style.module.css";
 // import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
 import ClassicEditor from 'ckeditor5-custom-build/build/ckeditor'
 import {CKEditor} from '@ckeditor/ckeditor5-react'
+import InformationDataService from '../../../Services/InformationDataService.js';
 
 function AddPostHeader({blogRecords, setBlogRecords}) {
 
@@ -105,16 +106,16 @@ function AddPostHeader({blogRecords, setBlogRecords}) {
         e.preventDefault();
         if (window.confirm("Proceed to add post?")) {
             //since arr is reversed, highest index will be the first one
-            let newestID = blogRecords[0].id+1;
+            // let newestID = blogRecords[0].id+1;
             let newRecord = {
-                "id": newestID,
+                // "id": newestID,
                 "header": headerText,
                 "imageUrl":imageURL,
                 "tags": tagArr,
                 "bodyPara": paraText,
                 "date": dateText
             }
-
+            setBlogRecords(current => [newRecord,...current]);
             addPostFunction(newRecord);
             setTriggerAddPost(false);
             resetAllText();
@@ -132,18 +133,37 @@ function AddPostHeader({blogRecords, setBlogRecords}) {
         
       };
 
-    const addPostFunction = async (post) => {
-        const res = await fetch('http://localhost:5000/blogPosts', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(post),
-        })
+    // const addPostFunction = async (post) => {
+    //     const res = await fetch('http://localhost:5000/blogPosts', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-type': 'application/json',
+    //         },
+    //         body: JSON.stringify(post),
+    //     })
 
-        const data = await res.json();
-        setBlogRecords([data,...blogRecords]);
-    }
+    //     const data = await res.json();
+    //     setBlogRecords([data,...blogRecords]);
+    // }
+
+    const addPostFunction = async (post) => {
+        // const newPost = {
+        //   "_id": instanceID, 
+        //   "header": headerText,
+        //   "imageUrl":imageURL,
+        //   "bodyPara": paraText,
+        //   "date": dateText,
+        //   "tags": tagArr
+        // }
+        InformationDataService.createBlogPost(post)
+        .then(response => {
+          // setSubmitted(true);
+          console.log(response.data.insertedId);
+        })
+        .catch(e=>{
+          console.log(e);
+        });
+      }
 
     function handleAddNewTag(e) {
         if (e.key === 'Enter') {

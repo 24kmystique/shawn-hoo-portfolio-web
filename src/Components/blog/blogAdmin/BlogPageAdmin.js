@@ -4,34 +4,35 @@ import BlogPostAdmin from './BlogPostAdmin.js'
 import './BlogAdmin.css';
 import { useState, useEffect } from 'react';
 import AddPostHeader from './AddPostHeader.js';
+import InformationDataService from '../../../Services/InformationDataService.js';
 
 function BlogPageAdmin() {
   let blogPostsAdmin;
   let [blogRecords,setBlogRecords] = useState("");
   useEffect(() => {
-    const getPosts = async() => {
-      const postsFromServer = await fetchPosts();
-      //reverse arr to display most recent first
-      setBlogRecords(postsFromServer.slice(0).reverse());
-    }
 
     getPosts();
 
-  },[])
+  },[blogRecords])
 
   // Fetch blogPosts from backend
-  const fetchPosts = async() => {
-    const res = await fetch('http://localhost:5000/blogPosts');
-    const data = await res.json();
-
-    return data;
-  }
+  const getPosts = async() =>{
+    InformationDataService.getBlogPost()
+    .then(response => {
+      // console.log(response.data[0]._id);
+      setBlogRecords(response.data.slice(0).reverse());
+      // setBlogRecords(response.data);
+    })
+    .catch(e => {
+        console.log(e)
+    });
+}
 
   return (
     <div className='blogPageAdminOuter'>
       {/* {blogPostsAdmin} */}
       <AddPostHeader blogRecords = {blogRecords} setBlogRecords = {setBlogRecords}/>
-      {blogRecords && blogRecords.map((post,index) => <BlogPostAdmin key={post.id} itemIdx = {index} instanceID = {post.id} recordImageUrl = {post.imageUrl} recordHeader = {post.header} bodyPara = {post.bodyPara} recordDate = {post.date} recordTags = {post.tags} blogRecords = {blogRecords} setBlogRecords = {setBlogRecords}/>)}
+      {blogRecords && blogRecords.map((post,index) => <BlogPostAdmin key={post._id} itemIdx = {index} instanceID = {post._id} recordImageUrl = {post.imageUrl} recordHeader = {post.header} bodyPara = {post.bodyPara} recordDate = {post.date} recordTags = {post.tags} blogRecords = {blogRecords} setBlogRecords = {setBlogRecords}/>)}
     </div>
   )
 }
