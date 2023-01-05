@@ -23,6 +23,12 @@ class InformationDataService{
     updateAboutPost(data){
         return http.put("/aboutUPDATE", data);
     }
+    getContactPost(){
+        return http.get(`/contactGET`);
+    }
+    updateContactPost(data){
+        return http.put("/contactUPDATE", data);
+    }
 }
 
 export default new InformationDataService();

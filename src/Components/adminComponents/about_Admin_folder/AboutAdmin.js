@@ -22,8 +22,8 @@ function AboutAdmin() {
         InformationDataService.getAboutPost()
         .then(response => {
             setAboutPost(response.data[0]);
-            setOriAboutContent(response.data[0].content);
-            setAboutContent(response.data[0].content);
+            setOriAboutContent(response.data[0].content.replace(/\\n/g,'\n'));
+            setAboutContent(response.data[0].content.replace(/\\n/g,'\n'));
             console.log(response.data[0]._id);
         })
         .catch(e => {

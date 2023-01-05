@@ -6,57 +6,51 @@ import { useState, useEffect, useRef } from 'react';
 import { AiOutlineEdit } from "react-icons/ai";
 import './ContactAdmin.css';
 import editStyles from "../../CSS/edit-style.module.css";
+import InformationDataService from '../../../Services/InformationDataService';
 
 function ContactAdminLeft() {
+  let [contactPost,setContactPost] = useState("");
   let [oriContactContent,setOriContactContent] = useState("");
   let [contactContent,setContactContent] = useState("");
   let [isEdit,setIsEdit] = useState(false);
   let timer = useRef();
 
   useEffect(() => {
-    const getPosts = async() => {
-      const postsFromServer = await fetchPosts();
-      //reverse arr to display most recent first
-    //   setBlogRecords(postsFromServer.slice(0).reverse());
-    setOriContactContent(postsFromServer[0].content);
-    setContactContent(postsFromServer[0].content);
-    }
 
     getPosts();
 
   },[])
 
 //----------------------database stuff------------------------------------------------
-  const fetchPosts = async() => {
-    const res = await fetch('http://localhost:5000/contact');
-    const data = await res.json();
-    return data;
-  }
-
-  const fetchPost = async() => {
-    const res = await fetch(`http://localhost:5000/contact/0`);
-    const data = await res.json();
-
-    return data;
+  const getPosts = async() =>{
+    InformationDataService.getContactPost()
+    .then(response => {
+      setContactPost(response.data[0]);
+      setOriContactContent(response.data[0].content.replace(/\\n/g,'\n'));
+      setContactContent(response.data[0].content.replace(/\\n/g,'\n'));
+      console.log(response.data[0]._id);
+    })
+    .catch(e => {
+        console.log(e)
+    });
   }
 
   const updatePost = async () => {
-    const postToUpdate = await fetchPost();
     const updatedPost = {
-      ...postToUpdate, 
+      "_id": contactPost._id, 
       "content": contactContent
     }
 
-    const res = await fetch(`http://localhost:5000/contact/0`, {
-      method:'PUT',
-      headers:{
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(updatedPost)
+    InformationDataService.updateContactPost(updatedPost)
+    .then(response => {
+      // setSubmitted(true);
+      console.log(response.data);
     })
-
-    const data = await res.json();
+    .catch(e=>{
+      console.log(e);
+    });
   }
+
 
 //----------------------database stuff------------------------------------------------
 

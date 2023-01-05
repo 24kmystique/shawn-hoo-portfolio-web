@@ -15,7 +15,7 @@ class About extends Component {
         const getAbout = async() =>{
             InformationDataService.getAboutPost()
             .then(response => {
-                this.setState({aboutContent:response.data[0].content});
+                this.setState({aboutContent:response.data[0].content.replace(/\\n/g,'\n')});
                 // console.log(response.data[0]._id);
             })
             .catch(e => {
