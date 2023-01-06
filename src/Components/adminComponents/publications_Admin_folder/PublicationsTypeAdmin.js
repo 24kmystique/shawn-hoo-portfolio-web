@@ -50,14 +50,14 @@ function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
 
   function handleAddItem(){
     // let newId = pubArr[pubArr.length-1].id +1;
-    let newPost = [headerText,pubArr];
+    let newPost = ["",""];
     // let newItem = {"id": newId, "first": "", "second": ""};
     setPubArr(current => [...current,newPost]);
     updatePost(instanceID);
   }
 
   function handleDeleteItem(idx){
-    setPubArr((current)=>current.filter((content)=> content.id !== idx));
+    setPubArr((current)=>current.filter((content,innerIdx)=> innerIdx !== idx));
   }
 
   function handleSave(){
@@ -139,7 +139,7 @@ const updatePost = async (instanceID) => {
           </div>
 
           {pubArr.map((publication) => (
-              <div key={publication.id}>
+              <div key={publication._id}>
                   {/* possibly has to change this to an a tag */}
                   <p style={{margin: 0}}>{publication[0]}. <i>{publication[1]}</i>. </p>
               </div>
