@@ -10,7 +10,7 @@ import editStyles from "../../CSS/edit-style.module.css";
 function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
   // console.log(publications[0].second);
   let [isEdit, setIsEdit] = useState(false);
-  let [headerText, setHeaderText] = useState(title);
+  let [headerText, setHeaderText] = useState(_.cloneDeep(title));
   let [oriPubArr, setOriPubArr] = useState(_.cloneDeep(publications));
   let [pubArr, setPubArr] = useState(_.cloneDeep(publications));
   let timer = useRef();
@@ -134,7 +134,7 @@ const updatePost = async (instanceID) => {
     return (
         <div className={editStyles.editContentBorderWrapper} style={{marginTop: 20, marginBottom: 20}} onClick={onClickEditTextArea}>
           <div className={editStyles.editHeaderWrapper}>
-            <h2 className={editStyles.editHeader}>{title}</h2>
+            <h2 className={editStyles.editHeader}>{headerText}</h2>
               <button className={editStyles.editHeaderButton} onClick={triggerEdit}><AiOutlineEdit className={editStyles.editIconMediumSize}/></button>
           </div>
 
