@@ -25,17 +25,16 @@ function PublicationsPageAdmin() {
     },[])
 
     function addNewCategory(){
-        let newID = arrAll[arrAll.length-1].id+1;
+        // let newID = arrAll[arrAll.length-1].id+1;
         let newPost = {
-            "id": newID,
+            // "id": newID,
             "category": [
               "Category Name",
               [
-                {
-                  "id": 0,
-                  "first": "Poem",
-                  "second": "Source"
-                }
+                [
+                  "Poem",
+                  "Source"
+                ]
               ]
             ]
           };
@@ -58,48 +57,19 @@ function PublicationsPageAdmin() {
         });
     }
 
-    // const fetchPost = async(instanceID) => {
-    //     const res = await fetch(`http://localhost:5000/publications/${instanceID}`);
-    //     const data = await res.json();
-    
-    //     return data;
-    // }
 
     const addPostFunction = async (post) => {
-        const res = await fetch('http://localhost:5000/publications', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify(post),
+        
+        InformationDataService.createPublicationPost(post)
+        .then(response => {
+          // setSubmitted(true);
+        //   console.log(response.data.insertedId);
         })
+        .catch(e=>{
+          console.log(e);
+        });
+      }
 
-        const data = await res.json();
-    }
-    
-    // const updatePost = async (instanceID) => {
-    //     const postToUpdate = await fetchPost(instanceID);
-    //     // updatePubArr();
-    //     // let newPost = [headerText,pubArr];
-    //     // console.log(pubArr);
-    //     const updatedPost = {
-    //     ...postToUpdate, 
-    //     // "category": newPost
-    //     // "bodyPara": paraText,
-    //     // "date": dateText,
-    //     // "tags": tagArr
-    //     }
-    
-    //     const res = await fetch(`http://localhost:5000/publications/${instanceID}`, {
-    //     method:'PUT',
-    //     headers:{
-    //         'Content-type': 'application/json'
-    //     },
-    //     body: JSON.stringify(updatedPost)
-    //     })
-    
-    //     const data = await res.json();
-    // }
     
     //----------------------database stuff------------------------------------------------
 
@@ -111,15 +81,15 @@ function PublicationsPageAdmin() {
             
             <div style={containerStyle}>
                 <div style={columnContainerStyle}>
-                    {arrAll && arrAll.filter((cat,idx) => idx%3===0).map((cat) => <PublicationsTypeAdmin key = {cat.id} title={cat.category[0]} publications={cat.category[1]} instanceID = {cat.id} setArrAll={setArrAll}/>)}
+                    {arrAll && arrAll.filter((cat,idx) => idx%3===0).map((cat) => <PublicationsTypeAdmin key = {cat._id} title={cat.category[0]} publications={cat.category[1]} instanceID = {cat._id} setArrAll={setArrAll}/>)}
                 </div>
 
                 <div style={columnContainerStyle}>
-                    {arrAll && arrAll.filter((cat,idx) => idx%3===1).map((cat) => <PublicationsTypeAdmin key = {cat.id} title={cat.category[0]} publications={cat.category[1]} setArrAll={setArrAll}/>)}
+                    {arrAll && arrAll.filter((cat,idx) => idx%3===1).map((cat) => <PublicationsTypeAdmin key = {cat._id} title={cat.category[0]} publications={cat.category[1]} instanceID = {cat._id} setArrAll={setArrAll}/>)}
                 </div>
 
                 <div style={columnContainerStyle}>
-                    {arrAll && arrAll.filter((cat,idx) => idx%3===2).map((cat) => <PublicationsTypeAdmin key = {cat.id} title={cat.category[0]} publications={cat.category[1]} setArrAll={setArrAll}/>)}
+                    {arrAll && arrAll.filter((cat,idx) => idx%3===2).map((cat) => <PublicationsTypeAdmin key = {cat._id} title={cat.category[0]} publications={cat.category[1]} instanceID = {cat._id} setArrAll={setArrAll}/>)}
                 </div>
             </div>
         </div>

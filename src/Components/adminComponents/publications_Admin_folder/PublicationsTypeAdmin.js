@@ -6,6 +6,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 import PopupEditor from '../popup/PopupEditor';
 import popupStyle from "../popup/PopupEditor.module.css";
 import editStyles from "../../CSS/edit-style.module.css";
+import InformationDataService from '../../../Services/InformationDataService';
 
 function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
   // console.log(publications[0].second);
@@ -48,9 +49,10 @@ function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
   }
 
   function handleAddItem(){
-    let newId = pubArr[pubArr.length-1].id +1;
-    let newItem = {"id": newId, "first": "", "second": ""};
-    setPubArr(current => [...current,newItem]);
+    // let newId = pubArr[pubArr.length-1].id +1;
+    let newPost = [headerText,pubArr];
+    // let newItem = {"id": newId, "first": "", "second": ""};
+    setPubArr(current => [...current,newPost]);
     updatePost(instanceID);
   }
 
@@ -71,7 +73,7 @@ function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
 
   function handleDeleteCat(){
     deleteServerPost(instanceID);
-    setArrAll(current => current.filter((item)=>item.id !==instanceID));
+    setArrAll(current => current.filter((item)=>item._id !==instanceID));
   }
 
   function onDoubleClick() {
@@ -89,42 +91,40 @@ function PublicationsTypeAdmin({title, publications, instanceID, setArrAll}) {
 //----------------------------------------------
 
 //----------------------database stuff------------------------------------------------
-const fetchPost = async(instanceID) => {
-  const res = await fetch(`http://localhost:5000/publications/${instanceID}`);
-  const data = await res.json();
 
-  return data;
-}
 
 const deleteServerPost = async (id) => {
-  await fetch(`http://localhost:5000/publications/${id}`,{
-    method: 'DELETE',
-  });
 
-  
+  InformationDataService.deletePublicationPost(id)
+  .then(response => {
+    // setSubmitted(true);
+    // setBlogRecords(blogRecords.filter((record) => record._id !== id));
+    console.log(response.data);
+  })
+  .catch(e=>{
+    console.log(e);
+  });
 }
+
 
 const updatePost = async (instanceID) => {
-  const postToUpdate = await fetchPost(instanceID);
-  
   let newPost = [headerText,pubArr];
-
   const updatedPost = {
-    ...postToUpdate, 
+    "_id": instanceID, 
     "category": newPost
-
   }
 
-  const res = await fetch(`http://localhost:5000/publications/${instanceID}`, {
-    method:'PUT',
-    headers:{
-      'Content-type': 'application/json'
-    },
-    body: JSON.stringify(updatedPost)
+  InformationDataService.updatePublicationPost(updatedPost)
+  .then(response => {
+    // setSubmitted(true);
+    console.log(response.data);
   })
-
-  const data = await res.json();
+  .catch(e=>{
+    console.log(e);
+  });
 }
+
+
 
 //----------------------database stuff------------------------------------------------
 
