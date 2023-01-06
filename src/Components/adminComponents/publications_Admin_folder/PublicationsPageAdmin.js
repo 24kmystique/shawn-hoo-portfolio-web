@@ -51,26 +51,19 @@ function PublicationsPageAdmin() {
         .then(response => {
           // console.log(response.data.filter((cat,idx) => idx%3===0)[0].category[1][0]);
           setArrAll(response.data);
-        //   setArr1(response.data.filter((cat,idx) => idx%3===0));
-        //   setArr2(response.data.filter((cat,idx) => idx%3===1));
-        //   setArr3(response.data.filter((cat,idx) => idx%3===2));
     
         })
         .catch(e => {
             console.log(e)
         });
     }
-    // const fetchPosts = async() => {
-    //     const res = await fetch('http://localhost:5000/publications');
+
+    // const fetchPost = async(instanceID) => {
+    //     const res = await fetch(`http://localhost:5000/publications/${instanceID}`);
     //     const data = await res.json();
+    
     //     return data;
     // }
-    const fetchPost = async(instanceID) => {
-        const res = await fetch(`http://localhost:5000/publications/${instanceID}`);
-        const data = await res.json();
-    
-        return data;
-    }
 
     const addPostFunction = async (post) => {
         const res = await fetch('http://localhost:5000/publications', {
@@ -84,29 +77,29 @@ function PublicationsPageAdmin() {
         const data = await res.json();
     }
     
-    const updatePost = async (instanceID) => {
-        const postToUpdate = await fetchPost(instanceID);
-        // updatePubArr();
-        // let newPost = [headerText,pubArr];
-        // console.log(pubArr);
-        const updatedPost = {
-        ...postToUpdate, 
-        // "category": newPost
-        // "bodyPara": paraText,
-        // "date": dateText,
-        // "tags": tagArr
-        }
+    // const updatePost = async (instanceID) => {
+    //     const postToUpdate = await fetchPost(instanceID);
+    //     // updatePubArr();
+    //     // let newPost = [headerText,pubArr];
+    //     // console.log(pubArr);
+    //     const updatedPost = {
+    //     ...postToUpdate, 
+    //     // "category": newPost
+    //     // "bodyPara": paraText,
+    //     // "date": dateText,
+    //     // "tags": tagArr
+    //     }
     
-        const res = await fetch(`http://localhost:5000/publications/${instanceID}`, {
-        method:'PUT',
-        headers:{
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify(updatedPost)
-        })
+    //     const res = await fetch(`http://localhost:5000/publications/${instanceID}`, {
+    //     method:'PUT',
+    //     headers:{
+    //         'Content-type': 'application/json'
+    //     },
+    //     body: JSON.stringify(updatedPost)
+    //     })
     
-        const data = await res.json();
-    }
+    //     const data = await res.json();
+    // }
     
     //----------------------database stuff------------------------------------------------
 

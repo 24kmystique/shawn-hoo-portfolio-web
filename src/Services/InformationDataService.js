@@ -35,6 +35,15 @@ class InformationDataService{
     getPublicationPost(){
         return http.get(`/publicationGET`);
     }
+    updatePublicationPost(data){
+        return http.put("/publicationUPDATE", data);
+    }
+    createPublicationPost(data){
+        return http.post("/publicationCREATE",data);
+    }
+    deletePublicationPost(id){
+        return http.delete(`/publicationDELETE?id=${id}`);
+    }
     //Blog
     getBlogPost(){
         return http.get(`/blogGET`);

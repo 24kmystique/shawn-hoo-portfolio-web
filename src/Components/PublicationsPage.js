@@ -35,7 +35,7 @@ const PublicationsPage = () => {
   const getPosts = async() =>{
     InformationDataService.getPublicationPost()
     .then(response => {
-      console.log(response.data.filter((cat,idx) => idx%3===0)[0].category[1][0]);
+      // console.log(response.data.filter((cat,idx) => idx%3===0)[0]._id);
       setArr1(response.data.filter((cat,idx) => idx%3===0));
       setArr2(response.data.filter((cat,idx) => idx%3===1));
       setArr3(response.data.filter((cat,idx) => idx%3===2));
@@ -49,15 +49,15 @@ const PublicationsPage = () => {
   return (
     <div className="containerStyle">
         <div className="columnContainerStyle">
-          {arr1 && arr1.map((cat) => <PublicationType key = {cat.id} title={cat.category[0]} publications={cat.category[1]}/>)}
+          {arr1 && arr1.map((cat) => <PublicationType key = {cat._id} title={cat.category[0]} publications={cat.category[1]}/>)}
         </div>
 
         <div className="columnContainerStyle">
-          {arr2 && arr2.map((cat) => <PublicationType key = {cat.id} title={cat.category[0]} publications={cat.category[1]}/>)}
+          {arr2 && arr2.map((cat) => <PublicationType key = {cat._id} title={cat.category[0]} publications={cat.category[1]}/>)}
         </div>
 
         <div className="columnContainerStyle">
-          {arr3 && arr3.map((cat) => <PublicationType key = {cat.id} title={cat.category[0]} publications={cat.category[1]}/>)}
+          {arr3 && arr3.map((cat) => <PublicationType key = {cat._id} title={cat.category[0]} publications={cat.category[1]}/>)}
         </div>
 
     </div>
