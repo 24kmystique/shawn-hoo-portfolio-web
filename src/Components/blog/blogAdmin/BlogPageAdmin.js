@@ -8,25 +8,23 @@ import InformationDataService from '../../../Services/InformationDataService.js'
 
 function BlogPageAdmin() {
   let blogPostsAdmin;
-  let [blogRecords,setBlogRecords] = useState("");
+  let [blogRecords,setBlogRecords] = useState([]);
   useEffect(() => {
 
     getPosts();
 
-  },[blogRecords])
+  },[blogRecords.length])
 
   // Fetch blogPosts from backend
   const getPosts = async() =>{
     InformationDataService.getBlogPost()
     .then(response => {
-      // console.log(response.data[0]._id);
       setBlogRecords(response.data.slice(0).reverse());
-      // setBlogRecords(response.data);
     })
     .catch(e => {
         console.log(e)
     });
-}
+  }
 
   return (
     <div className='blogPageAdminOuter'>
